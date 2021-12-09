@@ -1,5 +1,6 @@
 #include<fstream>
-#include<boost/multiprecision/cpp_int.hpp>
+#include<boost/multiprecision/cpp_int.hpp>//for int1024_t
+#include<boost/multiprecision/cpp_dec_float.hpp>//for cpp_dec_float_100
 #include<string>
 #include<random>
 
@@ -113,6 +114,52 @@ bool is_prime_FLT(int1024_t number)//primality test using fermat's little theore
     {   return false;}
 }
 
+bool is_prime_MRT(int1024_t num)
+{
+    //step 1
+    if(num%2!=0)
+    {
+        int1024_t power_result,n=num-1;
+        cpp_dec_float_100 power=1;
+        int1024_t q=1,q_old,power_old;
+        do
+        {
+            power_result=pow(2,power).convert_to<int1024_t>();
+            q_old=q;
+            q=n/power_result;
+            power_old=(int1024_t)power;
+            power++;
+        }
+        while(n%power_result==0);
+        //step 2
+        int1024_t a=2;
+        int1024_t b0=ssm(a,q_old,num);
+        //step 3
+        if(b0==1 || b0==-1)
+        {   return true;}
+        else
+        {   
+            int1024_t ssm_result;
+            do
+            {
+                ssm_result=ssm(b0,2,num);
+                b0=ssm_result;
+                if(ssm_result!=num-1 || ssm_result!=num+1)
+                {   break;}
+            }
+            while(true);
+            if(ssm_result==num-1)
+            {   return true;}
+            else if(ssm_result==num+1)
+            {   return false;}
+            else
+            {   return false;}
+        }
+    }
+    else
+    {   return false;}
+}
+
 char_array charset()
 {
     return char_array( 
@@ -146,7 +193,8 @@ int1024_t get_large_prime_number(int length)
     {
         //prime=dice();
         prime=string_to_number(random_string(length,randchar));
-        prime_found=is_prime_FLT(prime);
+        //prime_found=is_prime_FLT(prime);
+        prime_found=is_prime_MRT(prime);
     }
     return prime;
 }
