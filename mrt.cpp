@@ -57,7 +57,7 @@ bool is_prime_MRT(int1024_t num)
         int1024_t a=2;
         int1024_t b0=ssm(a,q_old,num);
         //step 3
-        if(b0==1 || b0==-1)
+        if(b0==1 || b0==num-1)
         {   return true;}
         else
         {   
@@ -66,13 +66,14 @@ bool is_prime_MRT(int1024_t num)
             {
                 ssm_result=ssm(b0,2,num);
                 b0=ssm_result;
-                if(ssm_result!=num-1 || ssm_result!=num+1)
+                cout<<"\nssm="<<ssm_result;
+                if(ssm_result==num-1 || ssm_result==1)
                 {   break;}
             }
             while(true);
             if(ssm_result==num-1)
             {   return true;}
-            else if(ssm_result==num+1)
+            else if(ssm_result==1)
             {   return false;}
             else
             {   return false;}
