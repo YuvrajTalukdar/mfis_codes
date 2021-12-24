@@ -310,27 +310,36 @@ int main()
             if(temp.length()>shunk_size)
             {   shunk_size=temp.length();}
             decrypted_msg_chunk_vec.push_back(temp);
-            //cout<<"\nd="<<temp;
+            //cout<<"\nd0="<<temp;
         }
         string encoded_text;
+        int mod_shunk=shunk_size%3;
         for(int a=0;a<decrypted_msg_chunk_vec.size();a++)
         {
-            if(a!=decrypted_msg_chunk_vec.size()-1)
+            if(shunk_size>decrypted_msg_chunk_vec.at(a).length())
             {
-                if(decrypted_msg_chunk_vec.at(a).length()<shunk_size)
+                if(a==decrypted_msg_chunk_vec.size()-1)//last shunk
                 {
-                    for(int b=0;b<shunk_size-decrypted_msg_chunk_vec.at(a).length();b++)
+                    int remaining0=(encoded_text.length()+decrypted_msg_chunk_vec.at(a).length())%3;
+                    if(remaining0!=0)
+                    {   remaining0=3-remaining0;}
+                    for(int b=0;b<remaining0;b++)
                     {   encoded_text.append("0");}
                 }
-            }
-            else
-            {
-                int remaining_char=(encoded_text.size())%3;
-                remaining_char+=decrypted_msg_chunk_vec.at(a).size()%3;
-                //cout<<"\net="<<encoded_text.size()<<" dc="<<decrypted_msg_chunk_vec.at(a).size()<<remaining_char;
-                //cout<<"\ntext="<<decrypted_msg_chunk_vec.at(a);
-                for(int b=0;b<remaining_char;b++)
-                {   encoded_text.append("0");}
+                else//rest shunks
+                {
+                    int current_mod=decrypted_msg_chunk_vec.at(a).length()%3;
+                    if(mod_shunk!=current_mod)
+                    {
+                        int remaining0;
+                        if(mod_shunk<current_mod)
+                        {   remaining0=(3-current_mod)+mod_shunk;}
+                        else if(mod_shunk>current_mod)
+                        {   remaining0=mod_shunk-current_mod;}
+                        for(int b=0;b<remaining0;b++)
+                        {   encoded_text.append("0");}
+                    }   
+                }
             }
             encoded_text.append(decrypted_msg_chunk_vec.at(a));
         }
