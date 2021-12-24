@@ -239,12 +239,15 @@ int main()
         cin>>e2;
         cout<<"p: ";
         cin>>p;
+        int r_size;
+        cout<<"set r size: ";
+        cin>>r_size;
 
         const auto ch_set = charset();  
         std::default_random_engine rng(std::random_device{}());
         std::uniform_int_distribution<> dist(0, ch_set.size()-1);
         auto randchar = [ ch_set,&dist,&rng ](){return ch_set[ dist(rng) ];};
-        int1024_t r=string_to_number(random_string(2,randchar));
+        int1024_t r=string_to_number(random_string(r_size,randchar));
         cout<<"\nr: "<<r<<"\n\n";
         //spliting the encoded text in shunks and encrypting it
         int count=0,msg_shunk_size=p.convert_to<string>().length()-1;
