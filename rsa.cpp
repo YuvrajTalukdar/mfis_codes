@@ -245,7 +245,7 @@ int main()
         cout<<"e: ";
         cin>>e;
         //spliting the encoded text in shunks and encrypting it
-        int count=0,msg_shunk_size=n.convert_to<string>().length()-1;
+        int count=0,msg_shunk_size=n.convert_to<string>().length();
         //vector<int1024_t> msg_shunk_vec;
         vector<int1024_t> encrypted_msg_chunk_vec;
         string shunk;
@@ -342,6 +342,13 @@ int main()
                 }
             }
             encoded_text.append(decrypted_msg_chunk_vec.at(a));
+        }
+        //this is to fix "072"=72 bug in the encoder
+        int mod=encoded_text.length()%3;
+        if(mod!=0)
+        {   
+            for(int a=0;a<3-mod;a++)
+            {   encoded_text.insert(encoded_text.begin(),'0');}
         }
         cout<<"\nEncoded Text: "<<encoded_text;
         cout<<"\nPlain Text: "<<decode_encodedtext(encoded_text)<<"\n\n";
