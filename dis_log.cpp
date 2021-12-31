@@ -448,7 +448,7 @@ int main()
                 }
                 x_vec.push_back(x-1);
             }
-            cout<<"\nq"<<b<<": "<<q<<" x"<<b<<": "<<x_vec.at(x_vec.size()-1);
+            cout<<"\nq"<<b<<": "<<q<<" beta"<<b<<": "<<next_beta<<" x"<<b<<": "<<x_vec.at(x_vec.size()-1);
         }
         crt_equation crt_eq;
         crt_eq.m=pow(pf_and_count_vec.at(a)[0],pf_and_count_vec.at(a)[1].convert_to<long long int>());
