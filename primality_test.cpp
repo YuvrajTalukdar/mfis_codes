@@ -122,7 +122,15 @@ int main()
 {
     cout<<"\nEnter Number: ";
     int1024_t number;
+    bool negative=false;
     cin>>number;
+    if(number==2 || number==-2)
+    {
+        cout<<number<<" is prime\n\n";
+        return 0;
+    }
+    if(number<0)
+    {   negative=true;number=number*-1;}
     bool is_prime=true;
     point1:
     cout<<"\n1. fermat's little theorem test\n2. Miller Rabin test\n3. Solovay-Strassen's test\n4. Brut force\n\nOption: ";
@@ -131,7 +139,11 @@ int main()
     if(option==1)
     {   is_prime=is_prime_FLT(number);}
     else if(option==2)
-    {   is_prime=is_prime_MRT(number);}
+    {   
+        is_prime=is_prime_FLT(number);
+        if(is_prime)
+        {   is_prime=is_prime_MRT(number);}
+    }
     else if(option==3)
     {   is_prime=is_prime_Solovay_Strassen(number);}
     else if(option==4)
@@ -145,7 +157,8 @@ int main()
     }
     else
     {   cout<<"\nWrong option!!";goto point1;}
-    
+    if(negative)
+    {   number=number*-1;}
     if(is_prime)
     {   cout<<number<<" is prime\n\n";}
     else
