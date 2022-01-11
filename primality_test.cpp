@@ -1,17 +1,38 @@
 #include<iostream>
 #include<boost/multiprecision/cpp_int.hpp>//for int1024_t
 #include<boost/multiprecision/cpp_dec_float.hpp>//for cpp_dec_float_100
+#include<gmp.h>
 
 using namespace boost::multiprecision;
 using namespace std;
+
+int1024_t string_to_number(string str_num)
+{
+    //cout<<"\nstr_num="<<str_num;
+    int1024_t num=0,mul=1;
+    for(int a=str_num.length()-1;a>=0;a--)
+    {
+        //cout<<" stoi="<<(string(1,str_num.at(a)));
+        num=num+mul*stoi(string(1,str_num.at(a)));
+        mul=mul*10;
+    }
+    return num;
+}
 
 int1024_t ssm(int1024_t x,int1024_t k,int1024_t m)//successive square multiplication
 {
     //x^k mod m
     int1024_t start=k,rem,q=2;
     long int count=0;//,power=1;
-    int1024_t mod_result=x%m;
-    int1024_t mul_large=1;
+    mpz_t mod_result,x_mpz,m_mpz,k_mpz;
+    mpz_init_set_str(x_mpz,x.convert_to<string>().c_str(),10);
+    mpz_init_set_str(m_mpz,m.convert_to<string>().c_str(),10);
+    mpz_init_set_str(k_mpz,k.convert_to<string>().c_str(),10);
+    mpz_init(mod_result);
+    mpz_mod(mod_result,x_mpz,m_mpz);
+    
+    mpz_t mul_large;
+    mpz_init_set_str(mul_large,"1",10);
     //vector<int1024_t> mod_result_vec;
     while(q!=0)
     {
@@ -19,19 +40,26 @@ int1024_t ssm(int1024_t x,int1024_t k,int1024_t m)//successive square multiplica
         q=start/2;
         start=q;
         if(count>0)
-        {   mod_result=(mod_result*mod_result)%m;}
+        {   
+            mpz_t mul;
+            mpz_init(mul);
+            mpz_mul(mul,mod_result,mod_result);
+            mpz_mod(mod_result,mul,m_mpz);
+        }
         if(rem==1)
         {
             //cout<<"\nmr="<<mod_result;
-
-            mul_large=mul_large*mod_result;
-            if(mul_large>m)
-            {   mul_large=mul_large%m;}
+            mpz_mul(mul_large,mul_large,mod_result);
+            if(mpz_cmp(mul_large,m_mpz)>0)
+            {   mpz_mod(mul_large,mul_large,m_mpz);}
         }
         count++;
     }
-    int1024_t result=mul_large%m;
-    return result;
+    mpz_t result;
+    mpz_init(result);
+    mpz_mod(result,mul_large,m_mpz);
+    
+    return string_to_number(mpz_get_str(NULL,10,result));
 }
 
 bool is_prime_FLT(int1024_t number)//primality test using fermat's little theorem. Should fail in 561
