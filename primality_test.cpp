@@ -137,7 +137,7 @@ bool is_prime_Solovay_Strassen(int1024_t num)//should fail in 91
         //rhs
         int1024_t rhs=ssm(2,(num-1)/2,num);
         cout<<"\nlhs="<<lhs<<" rhs="<<rhs<<endl;
-        if(rhs=num-1)
+        if(rhs==num-1)
         {   rhs=-1;}
         if(lhs==rhs)
         {   return true;}
